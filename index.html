@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Room 1st task</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script>
+    // Connect to Flask-SocketIO
+    var socket = io();
+
+    // Ask user for a name
+    var username = "";
+    while (!username) {
+      username = prompt("Enter your username:");
+    }
+
+    // Receive messages from server
+    socket.on("message", function(data) {
+      var messages = document.getElementById("messages");
+      messages.innerHTML += "<p><b>" + data.user + ":</b> " + data.text + "</p>";
+    });
+
+    // Send message
+    function sendMessage() {
+      var input = document.getElementById("msg");
+      var text = input.value;
+      if (text.trim() !== "") {
+        socket.send({ user: username, text: text });
+        input.value = "";
+      }
+    }
+
+    // Send message on Enter key
+    document.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</head>
+<body>
+  <h2>📡 Mongol Barota First Task</h2>
+  <input id="msg" type="text" placeholder="Type something...">
+  <button onclick="sendMessage()">Send</button>
+  <div id="messages" style="margin-top: 20px; font-family: monospace;"></div>
+</body>
+</html>
